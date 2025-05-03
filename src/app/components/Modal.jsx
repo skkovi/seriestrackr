@@ -6,6 +6,17 @@ export default function Modal({ onClose, show, platforms }) {
   const [showDetails, setShowDetails] = useState(false);
   const [platformsData, setPlatformsData] = useState([]);
   let streamingPlatforms = [];
+  async function handleMarkAsWatched() {
+    const res = await fetch("/api/tv/" + show.id + "/watched", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: show.id }),
+    });
+    const data = await res.json();
+    console.log("Successfully marked as watched:", data);
+  }
   useEffect(() => {
     const fetchReviews = async () => {
       const res = await fetch("/api/tv/" + show.id + "/reviews");
@@ -88,7 +99,10 @@ export default function Modal({ onClose, show, platforms }) {
                 <button className="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition">
                   Add to Watchlist
                 </button>
-                <button className="px-4 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium transition">
+                <button
+                  onClick={handleMarkAsWatched}
+                  className="px-4 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium transition"
+                >
                   Mark as Watched
                 </button>
               </div>
