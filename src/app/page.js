@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import Modal from "./components/Modal";
 
 export default function Home() {
@@ -12,11 +11,9 @@ export default function Home() {
 
   const router = useRouter();
   const fetchPopularTV = async () => {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`
-    );
+    const res = await fetch("/api/tv/popular");
     const data = await res.json();
-    setShows(data.results);
+    setShows(data.data);
   };
   async function handleSearch() {
     if (searchQuery.trim() === "") {
@@ -24,17 +21,17 @@ export default function Home() {
     }
     setIsSearching(true);
     const res = await fetch(
-      `https://api.themoviedb.org/3/search/tv?query=${searchQuery}&api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`
+      `/api/tv/search?query=${encodeURIComponent(searchQuery)}`
     );
     const data = await res.json();
-    setShows(data.results);
+    setShows(data.data);
   }
 
   useEffect(() => {
     fetchPopularTV();
   }, []);
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-black via-zinc-900 to-zinc-800 text-white px-6 py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-black/10 via-zinc-900 to-zinc-800 text-white px-6 py-24">
       <h1 className="text-4xl font-bold">SeriesTrackr</h1>
       <section className="min-h-[40vh] bg-grey text-white flex flex-col justify-center items-center space-y-6 px-6">
         <h1 className="text-4xl font-bold text-center">
@@ -89,7 +86,6 @@ export default function Home() {
         )}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
           {shows.map((show) => (
-            //<Link href={`/show/${show.id}`} key={show.id} className="group">
             <div
               onClick={() => {
                 router.push(`/?id=${show.id}`);
@@ -104,7 +100,6 @@ export default function Home() {
                 className="w-full h-[280px] object-cover"
               />
             </div>
-            //</Link>
           ))}
         </div>
         {selectedShow && (
