@@ -1,21 +1,35 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-export default function Modal({ onClose, show, platforms }) {
+export default function Modal({
+  onClose,
+  show,
+  platforms,
+  watched,
+  updateWatchedShows,
+}) {
   const [reviews, setReviews] = useState([]);
   const [showDetails, setShowDetails] = useState(false);
   const [platformsData, setPlatformsData] = useState([]);
+  const [markWatched, setMarkWatched] = useState(watched);
   let streamingPlatforms = [];
-  async function handleMarkAsWatched() {
+  async function handleMarkAsWatched(method) {
     const res = await fetch("/api/tv/" + show.id + "/watched", {
-      method: "POST",
+      method: method,
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ id: show.id }),
     });
     const data = await res.json();
-    console.log("Successfully marked as watched:", data);
+    if (method === "POST") {
+      setMarkWatched(true);
+      updateWatchedShows(show.id, true);
+    }
+    if (method === "DELETE") {
+      setMarkWatched(false);
+      updateWatchedShows(show.id, false);
+    }
   }
   useEffect(() => {
     const fetchReviews = async () => {
@@ -99,12 +113,21 @@ export default function Modal({ onClose, show, platforms }) {
                 <button className="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition">
                   Add to Watchlist
                 </button>
-                <button
-                  onClick={handleMarkAsWatched}
-                  className="px-4 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium transition"
-                >
-                  Mark as Watched
-                </button>
+                {!watched && !markWatched ? (
+                  <button
+                    onClick={() => handleMarkAsWatched("POST")}
+                    className="px-4 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium transition"
+                  >
+                    Mark as Watched
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleMarkAsWatched("DELETE")}
+                    className="px-4 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium transition"
+                  >
+                    Mark as Unwatched
+                  </button>
+                )}
               </div>
             </div>
           </div>

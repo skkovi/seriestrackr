@@ -3,18 +3,14 @@ import { useEffect, useState } from "react";
 
 export default function ShowPageClient({ id, show }) {
   const [casts, setCasts] = useState([]);
-
   const getCast = async () => {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/tv/${id}/credits?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`
-    );
+    const res = await fetch("/api/tv/" + id + "/cast", { cache: "no-store" });
     const data = await res.json();
-    setCasts(data.cast);
+    setCasts(data.data);
   };
   useEffect(() => {
     getCast();
   }, []);
-  console.log(show);
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-black via-zinc-900 to-zinc-800 text-white px-6 py-12">
       <div className="flex flex-col md:flex-row gap-8">
