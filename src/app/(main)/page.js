@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Modal from "@/components/Modal";
 import Navbar from "@/components/Navbar";
+import ShowPageClient from "../show/[id]/ShowPageClient";
 
 export default function Home() {
   const [shows, setShows] = useState([]);

@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import Link from "next/link";
 export default async function Profile() {
   const TMDB_API_KEY = process.env.TMDB_API_KEY;
   const supabase = await createClient();
@@ -43,11 +44,19 @@ export default async function Profile() {
               key={show.id}
               className="bg-zinc-800/60 rounded-xl overflow-hidden border border-zinc-700 backdrop-blur-md shadow-md hover:scale-[1.02] transition"
             >
-              <img
-                src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
-                alt={show.name}
-                className="w-full h-[280px] object-cover"
-              />
+              <Link
+                href={`/show/${show.id}`}
+                key={show.id}
+                target="_blank"
+                className="text-blue-500 hover:underline
+                text-sm"
+              >
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
+                  alt={show.name}
+                  className="w-full h-[280px] object-cover"
+                />
+              </Link>
               <h2 className="text-xl font-semibold">{show.tv_show_id}</h2>
             </div>
           ))}
